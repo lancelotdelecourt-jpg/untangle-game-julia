@@ -1,24 +1,10 @@
-# ─────────────────────────────────────────────────────────────────────
-# types.jl — Structures de données du jeu
-# ─────────────────────────────────────────────────────────────────────
 
-"""
-    Node
-
-Représente un nœud (sommet) du graphe, positionné à des coordonnées (x, y)
-dans la fenêtre. Mutable car on déplace les nœuds à la souris.
-"""
 mutable struct Node
     x::Float64
     y::Float64
 end
 
-"""
-    Edge
 
-Représente une arête entre deux nœuds, stockée via leurs indices dans
-le vecteur `nodes` (indexation 1-based comme en Julia).
-"""
 struct Edge
     a::Int   # index du premier nœud dans state.nodes
     b::Int   # index du second nœud
@@ -42,9 +28,6 @@ mutable struct GameState
     drag_oy  :: Float64
 end
 
-"""
-    GameState()
+ # état vide, aucun nœud sélectionné.
 
-Constructeur par défaut : état vide, aucun nœud sélectionné.
-"""
 GameState() = GameState(Node[], Edge[], nothing, 0.0, 0.0)
