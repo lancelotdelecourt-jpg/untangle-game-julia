@@ -1,2 +1,0 @@
-println("hi")
-println("hello")

@@ -1,42 +1,60 @@
-# ─────────────────────────────────────────────────────────────────────
+
 # generator.jl — Génération d'un graphe planaire, puis mélange
-# ─────────────────────────────────────────────────────────────────────
 
-"""
-    can_add_edge(state, a, b) -> Bool
+function can_add_edge(state,a,b)
+    for i in 1:length(state.edges)
+        e = state.edges[i]
+        if edgescross(state,a,b,e.a,e.b) == true
+            return false
+        end
+    end
+    return true
+end
+    
 
-Vérifie qu'on peut ajouter l'arête (a,b) sans croiser aucune arête
-déjà présente dans `state.edges`.
-"""
-function can_add_edge
-"""
-    generate!(state, n_nodes; width, height, radius)
+function generate!( state :: GameState, n_nodes::Int, n_edges::Int)
+    # initialise variables
+    empty!(state.nodes) # empty clears une array déja en place sans en changer le type
+    empty!(state.edges)
 
-Remplit `state` avec un graphe planaire (= sans croisements) de `n_nodes`
-nœuds, puis mélange aléatoirement les positions pour créer le puzzle.
+    # on cree les trois premiers points
+    push!(state.nodes, Node(W/3, H/3 )) # même chose que append mais que pour un seul élément, dcp plus adapté dans ce cas en plus c'est stylé
+    push!(state.nodes, Node(2*W/3, H/3 ))
+    push!(state.nodes, Node(W/2, 2*H/3 ))
 
-Algorithme :
-1. On part d'un triangle de base (3 nœuds, 3 arêtes) — trivialement planaire.
-2. On ajoute les nœuds suivants un par un à des positions aléatoires,
-   et on essaie de les connecter à tous les nœuds existants ; on ne
-   conserve que les arêtes qui ne croisent rien (→ reste planaire).
-3. Une fois le graphe construit, on "scramble" les positions : le joueur
-   doit retrouver une disposition sans croisement par drag-and-drop.
-"""
-function generate!(
+     # On relie les 3 nœuds pour former le triangle
+    push!(state.edges, Edge(1, 2))
+    push!(state.edges, Edge(2, 3))
+    push!(state.edges, Edge(1, 3))
 
-    # ── Étape 3 : scramble ────────────────────────────────────────────
+ # étape deux ajouter les noeuds un par un
+    pad = R*3 
+    for i in 4:n_nodes
+        new_node = Node(
+            rand()*(W - 2*pad) + pad,
+            rand()*(H - 2*pad) + pad)
+        
+        push!(state.nodes, new_node)
+        # pour chaque noeud créé essayer de faire le plus de liaison possible sans 
+        #croiser de liaison déjà faite
+        for j in 1: length(state.nodes)-1
+        new_edge = Edge(i,j)
+            if can_add_edge(state,i,j) == true
+                push!(state.edges,new_edge)
+            end
+        end
+    end
+end
     # On téléporte chaque nœud à une position aléatoire. Le graphe reste
     # planaire (une solution existe !) mais le joueur doit la retrouver.
-    scramble!(state; width, height, radius)
-
-    return state
+ function melange!(state; W, H, R)
+    pad = R*3
+    for i in 1:length(state.nodes)
+           e = state.nodes[i]
+            e.x = rand()*(W - 2*pad) + pad
+            e.y = rand()*(H - 2*pad) + pad
+     end
 end
+melange!(state; W,H,R)
 
-"""
-    scramble!(state; width, height, radius)
 
-Repositionne aléatoirement tous les nœuds dans la fenêtre, en respectant
-une marge par rapport aux bords.
-"""
-function scramble!
