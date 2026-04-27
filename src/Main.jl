@@ -19,7 +19,7 @@ export run_game
 
 function on_press!(state::GameState, x::Real, y::Real, canvas; radius::Real=R) # x et y positions de la souris
     for (i, nodes) in enumerate(state.nodes) # on parcourt tous les noeuds dans enumerate et pour chaque noeud, on a le noeud lui-même et son numéro
-        distance = √((x - nodes.x)² + (y - nodes.y)²)
+        distance = √((x - nodes.x)^2 + (y - nodes.y)^2)
         if  distance <= radius + 4 # si la distance entre le centre du noeud et la position de la souris est inférieure à R + 4 pixels, alors on considère que le noeud a été cliqué
             state.dragging = i # on mémorise le numéro du nœud qu'on est en train d'attraper
             state.drag_ox  = x - nodes.x # on mémorise le décalage entre la souris et le centre du nœud, en horizontal (ox) et vertical (oy).
