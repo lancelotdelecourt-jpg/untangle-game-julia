@@ -81,7 +81,7 @@ function run_game()
     # 5) Affichage + boucle principale
     showall(fenêtre)
     signal_connect(fenêtre, :destroy) do _
-        Gtk.gtk_quit()
+        Gtk.gtk_main_quit()
     end
     Gtk.gtk_main()
 end
