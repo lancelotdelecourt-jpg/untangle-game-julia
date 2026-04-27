@@ -13,6 +13,17 @@ le dernier (affiché au-dessus), ce qui est l'attente habituelle de l'utilisateu
 """
 function pick_node(state::GameState, x::Real, y::Real;
                    radius::Real = 14, tolerance::Real = 4)
+    distance = √((x - node.x)² + (y - node.y)²)
+    result = nothing
+    for i in 1:length(state.nodes)
+        n = state.node[i]
+        if distance <= radius + tolerance
+            result = i
+        end
+    end
+    return result
+end
+
    
 """
     on_press!(state, x, y, canvas; radius)
