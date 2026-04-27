@@ -12,15 +12,15 @@ function can_add_edge(state,a,b)
 end
     
 
-function generate!( state :: GameState, n_nodes::Int, n_edges::Int)
+function generate!(state::GameState, n_nodes::Int; width=W, height=H, radius=R)
     # initialise variables
     empty!(state.nodes) # empty clears une array déja en place sans en changer le type
     empty!(state.edges)
 
     # on cree les trois premiers points
-    push!(state.nodes, Node(W/3, H/3 )) # même chose que append mais que pour un seul élément, dcp plus adapté dans ce cas en plus c'est stylé
-    push!(state.nodes, Node(2*W/3, H/3 ))
-    push!(state.nodes, Node(W/2, 2*H/3 ))
+    push!(state.nodes, Node(width/3, height/3 )) # même chose que append mais que pour un seul élément, dcp plus adapté dans ce cas en plus c'est stylé
+    push!(state.nodes, Node(2*width/3, height/3 ))
+    push!(state.nodes, Node(width/2, 2*height/3 ))
 
      # On relie les 3 nœuds pour former le triangle
     push!(state.edges, Edge(1, 2))
@@ -28,14 +28,14 @@ function generate!( state :: GameState, n_nodes::Int, n_edges::Int)
     push!(state.edges, Edge(1, 3))
 
  # étape deux ajouter les noeuds un par un
-    pad = R*3 
+    pad = radius*3
     for i in 4:n_nodes
         new_node = Node(
-            rand()*(W - 2*pad) + pad,
-            rand()*(H - 2*pad) + pad)
-        
+            rand()*(width - 2*pad) + pad,
+            rand()*(height - 2*pad) + pad)
+
         push!(state.nodes, new_node)
-        # pour chaque noeud créé essayer de faire le plus de liaison possible sans 
+        # pour chaque noeud créé essayer de faire le plus de liaison possible sans
         #croiser de liaison déjà faite
         for j in 1: length(state.nodes)-1
         new_edge = Edge(i,j)
@@ -45,9 +45,10 @@ function generate!( state :: GameState, n_nodes::Int, n_edges::Int)
         end
     end
 end
+
     # On téléporte chaque nœud à une position aléatoire. Le graphe reste
     # planaire (une solution existe !) mais le joueur doit la retrouver.
- function melange!(state; W, H, R)
+function melange!(state; W, H, R)
     pad = R*3
     for i in 1:length(state.nodes)
            e = state.nodes[i]
@@ -55,6 +56,5 @@ end
             e.y = rand()*(H - 2*pad) + pad
      end
 end
-melange!(state; W,H,R)
 
 

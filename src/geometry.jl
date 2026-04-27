@@ -29,9 +29,9 @@ end
 
 
 function edgescross(state::GameState, a, b, c, d)
-    # 1. Si les arêtes partagent un nœud, elles ne se "croisent" pas pour julia mais bien pour nous
+    # 1. Deux arêtes partageant un nœud ne se croisent pas
     if a == c || a == d || b == c || b == d
-        return true
+        return false
     end
 
     # 2. On récupère les coordonnées x y des Nodes correspondants aux indices
